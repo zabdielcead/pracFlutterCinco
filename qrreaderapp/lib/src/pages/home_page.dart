@@ -1,6 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:qrreaderapp/src/bloc/scan_bloc.dart';
+import 'package:qrreaderapp/src/models/scan_model.dart';
 import 'package:qrreaderapp/src/pages/direcciones_page.dart';
 import 'package:qrreaderapp/src/pages/mapas_page.dart';
+import 'package:qrreaderapp/src/utils/utils.dart' as utils;
+
 
 class HomePage extends StatefulWidget {
   
@@ -10,6 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  final scansBloc = new ScansBloc();
 
   int currentIndex = 0;
   @override
@@ -21,7 +30,7 @@ class _HomePageState extends State<HomePage> {
           IconButton(
                 icon: Icon(Icons.delete_forever), 
                 onPressed: (){
-
+                  scansBloc.borrarScanTODOS;//manda la referencia () por eso se quita los parentesis hast que presione el usuario
                 }
           )
         ],
@@ -31,10 +40,58 @@ class _HomePageState extends State<HomePage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.filter_center_focus),
-        onPressed: (){},
+        onPressed:() => _scanQR(context),
         backgroundColor: Theme.of(context).primaryColor, // obtenemos el primary color que modificamos en main.dart
       ),
     );
+  }
+
+  _scanQR(BuildContext context) async{ // escaneo
+    print('scanqr.....');
+    // generador de qr  https://www.qrcode.es/es/generador-qr-code/
+    //leer scanear qr codigos de barra https://pub.dev/packages/barcode_scan#-installing-tab-
+    // https://www.facebook.com
+    // geo:40.724233047051705,-74.00731459101564
+
+    /*
+      instalacion sqflite
+      https://pub.dev/packages/sqflite#-installing-tab-  
+
+      direccion donde se encuentra el archivo de la base datos
+      instalacion path_provider
+      https://pub.dev/packages/path_provider#-installing-tab-
+    */
+
+
+
+    String futureString = 'https://fernando-herrera.com';
+     /*try {
+       futureString = await BarcodeScanner.scan();
+     }catch(e){
+       futureString = e.toString();
+     }
+     print('Future String: $futureString');
+     if(futureString != null){
+        print('Tenemos Inofrmacion');
+     }*/
+     if( futureString != null ){
+       final scan = ScanModel(valor: futureString);
+       scansBloc.agregarScan(scan);
+       final scan2 = ScanModel(valor: 'geo:40.724233047051705,-74.00731459101564');
+       scansBloc.agregarScan(scan2);
+       if(Platform.isIOS) {
+            Future.delayed(Duration(milliseconds: 750), () {
+                utils.abrirScan(context,scan);
+            });
+       }else {
+          utils.abrirScan(context, scan);
+       }
+       
+     }
+
+
+     // se instalara la url launcher para que cuando se aprieteel geo o la pagina y abrira la aplicaion respectiva tel, sms, url
+
   }
 
   Widget _crearBottomNavigationBar() {
