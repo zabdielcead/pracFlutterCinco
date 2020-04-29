@@ -64,8 +64,8 @@ class _HomePageState extends State<HomePage> {
 
 
 
-    String futureString = 'https://fernando-herrera.com';
-     /*try {
+    String futureString;
+     try {
        futureString = await BarcodeScanner.scan();
      }catch(e){
        futureString = e.toString();
@@ -73,12 +73,12 @@ class _HomePageState extends State<HomePage> {
      print('Future String: $futureString');
      if(futureString != null){
         print('Tenemos Inofrmacion');
-     }*/
+     }
      if( futureString != null ){
        final scan = ScanModel(valor: futureString);
        scansBloc.agregarScan(scan);
-       final scan2 = ScanModel(valor: 'geo:40.724233047051705,-74.00731459101564');
-       scansBloc.agregarScan(scan2);
+      // final scan2 = ScanModel(valor: 'geo:40.724233047051705,-74.00731459101564');
+      // scansBloc.agregarScan(scan2);
        if(Platform.isIOS) {
             Future.delayed(Duration(milliseconds: 750), () {
                 utils.abrirScan(context,scan);

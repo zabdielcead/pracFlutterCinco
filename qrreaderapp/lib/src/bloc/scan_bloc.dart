@@ -1,8 +1,9 @@
 import 'dart:async';
 
+import 'package:qrreaderapp/src/bloc/validator.dart';
 import 'package:qrreaderapp/src/providers/db_provider.dart';
 
-class ScansBloc {
+class ScansBloc with Validators{
  //toda esta forma es crear una sola instancia de scansbloc a lo largo de toda la aplicación sin importar que se haga new en varios lugares
 
  /*
@@ -32,7 +33,9 @@ class ScansBloc {
   final _scansController = StreamController<List<ScanModel>>.broadcast(); //porque en varios lugares van escuchar el broadcast
  // escuchar eñ scanscontroller
 
-  Stream<List<ScanModel>> get scansStream => _scansController.stream; //escuchara el flujo de informacion de scnas controlle
+  Stream<List<ScanModel>> get scansStream => _scansController.stream.transform(validarGeo); //escuchara el flujo de informacion de scnas controlle
+  Stream<List<ScanModel>> get scansStreamHttp => _scansController.stream.transform(validarHttp);
+
 
   dispose(){
     _scansController?.close();
